@@ -2,10 +2,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import curve_fit
 import warnings
+warnings.simplefilter("ignore", category=RuntimeWarning)
+try:
+    import tkinter as tk
+except ImportError:
+    tk = None
+
 import wr_data as wr
 import pwlf
-warnings.simplefilter("ignore", category=RuntimeWarning)
-import tkinter as tk
 
 
 def wr_model(poids, slope, offset_X, amplitude):
