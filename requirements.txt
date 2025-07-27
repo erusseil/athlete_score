@@ -1,0 +1,7 @@
+streamlit
+matplotlib
+numpy
+scipy
+pwlf
+tkinter
+pyqt5
