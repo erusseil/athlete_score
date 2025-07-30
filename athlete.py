@@ -5,7 +5,6 @@ import warnings
 import wr_data as wr
 import pwlf
 warnings.simplefilter("ignore", category=RuntimeWarning)
-import tkinter as tk
 
 
 def wr_model(poids, slope, offset_X, amplitude):
@@ -214,47 +213,6 @@ def compute_result():
     # A simple computation example
     result, both = score_athlete(sexe, poids, age, SBD, temps_marathon, temps_semi)
     score_force, score_endu = both
-
-    try:
-        # Update the result display
-        force_label.config(state=tk.NORMAL)  # Enable the result box to change the value
-        force_label.delete(1.0, tk.END)  # Clear the previous result
-        force_label.insert(tk.END, f"{score_force:.1f}")  # Insert the computed result
-        force_label.config(state=tk.DISABLED)  # Disable interaction with the result box
-    except ValueError:
-        # Update the result display
-        force_label.config(state=tk.NORMAL)  # Enable the result box to change the value
-        force_label.delete(1.0, tk.END)  # Clear the previous result
-        force_label.insert(tk.END, "")  # Insert the computed result
-        force_label.config(state=tk.DISABLED)  # Disable interaction with the result box
-
-  
-    try:  
-        # Update the result display
-        endu_label.config(state=tk.NORMAL)  # Enable the result box to change the value
-        endu_label.delete(1.0, tk.END)  # Clear the previous result
-        endu_label.insert(tk.END, f"{score_endu:.1f}")  # Insert the computed result
-        endu_label.config(state=tk.DISABLED)  # Disable interaction with the result box
-    except ValueError:
-        # Update the result display
-        endu_label.config(state=tk.NORMAL)  # Enable the result box to change the value
-        endu_label.delete(1.0, tk.END)  # Clear the previous result
-        endu_label.insert(tk.END, "")  # Insert the computed result
-        endu_label.config(state=tk.DISABLED)  # Disable interaction with the result box
-
-
-    try:
-        # Update the result display
-        result_label.config(state=tk.NORMAL)  # Enable the result box to change the value
-        result_label.delete(1.0, tk.END)  # Clear the previous result
-        result_label.insert(tk.END, f"{result:.1f}")  # Insert the computed result
-        result_label.config(state=tk.DISABLED)  # Disable interaction with the result box
-    except ValueError:
-        # Handle invalid inputs (non-numeric or empty fields)
-        result_label.config(state=tk.NORMAL)
-        result_label.delete(1.0, tk.END)
-        result_label.insert(tk.END, "")
-        result_label.config(state=tk.DISABLED)
 
 model_params_homme, _ = curve_fit(wr_model, wr.sbd_poids_homme[:, 0],  wr.sbd_poids_homme[:, 1], p0=[0.05, 50, 800])
 model_params_femme, _ = curve_fit(wr_model,  wr.sbd_poids_femme[:, 0],  wr.sbd_poids_femme[:, 1], p0=[0.05, 50, 800])
