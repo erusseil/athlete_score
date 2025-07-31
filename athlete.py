@@ -17,7 +17,7 @@ def score_SBD(sexe, poids, age, SBD, do_plot=False):
 
     X_poids = np.linspace(50, 200, 100)
     
-    if sexe == 'H':
+    if (sexe == 'H') or (sexe == 'M'):
         wr = facteur_age * wr_model(poids, *model_params_homme)
         wr_plot = facteur_age * wr_model(X_poids, *model_params_homme)
 
@@ -27,7 +27,7 @@ def score_SBD(sexe, poids, age, SBD, do_plot=False):
 
 
     else:
-        raise Exception("ERREUR: Sexe doit être H ou F")
+        raise Exception("ERREUR: Sex must be M or F")
 
     baseline = baseline_sbd * wr
     baseline_plot = baseline_sbd * wr_plot
@@ -83,7 +83,7 @@ def score_endurance(sexe, age, temps_marathon=None, temps_semi=None):
     mdist = 42.195
     facteur_age = facteur_age_marathon(age)
 
-    if sexe == 'H':
+    if (sexe == 'H') or (sexe == 'M'):
         wr_marathon = facteur_age * mdist / wr.marathon_age_homme[:, 1].min()
         wr_semi = facteur_age * (mdist/2) / wr.semi_age_homme[:, 1].min()
 
@@ -131,7 +131,7 @@ def score_athlete(sexe, poids, age, SBD, temps_marathon=None, temps_semi=None):
     # We multiply by a small value to enable a theoritical 100% hybrid score.
     # Otherwise a perfect hybrid athlete would need to reach 100% strength and endurance
     bonus = 1.05
-    final = min(bonus*final<1, bonus*final, 1)
+    final = np.where(bonus*final<1, bonus*final, 1)
     
     return 100*final, 100*score_SBD_value, 100*score_endurance_value
 
