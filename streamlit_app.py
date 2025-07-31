@@ -130,44 +130,60 @@ def main():
 
     st.markdown("""<style>.stApp {background-color: white;}</style>""", unsafe_allow_html=True)
     st.set_page_config(layout = "wide")
-    st.title("Hybrid Score Calculator")
+
+    title_cols = st.columns(3)
+    title_cols[0].markdown("----------")
+    title_cols[1].markdown("<h2 style='text-align: center; font-size: 52px;'>Hybrid Score Calculator</h2>", unsafe_allow_html=True)
+    title_cols[2].markdown("----------")
+
+    title_cols[0].markdown("<h2 style='text-align: center;'>Endurance</h2>", unsafe_allow_html=True)
+    title_cols[1].markdown("<h2 style='text-align: center;'>User info</h2>", unsafe_allow_html=True)
+    title_cols[2].markdown("<h2 style='text-align: center;'>Force</h2>", unsafe_allow_html=True)
 
     # First row: three input blocks
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.header("Endurance")
+    cols = st.columns(9)
+    with cols[1]:
         h = st.number_input("Heures", min_value=0, max_value=99, value=0)
         m = st.number_input("Minutes", min_value=0, max_value=59, value=0)
         s = st.number_input("Secondes", min_value=0, max_value=59, value=0)
-    with col2:
-        st.header("User info")
+        discipline_endurance = st.selectbox("Discipline", ["Semi-Marathon", "Marathon"])
+
+    with cols[4]:
         age = st.number_input("Age", min_value=15, max_value=100, value=25, step=1)
         poids = st.number_input("Poids (kg)", min_value=0.0, max_value=300.0, value=80.0)
         sexe = st.selectbox("Sexe", ["H", "F"])
-        discipline = st.selectbox("Discipline", ["Semi-Marathon", "Marathon"])
-    with col3:
-        st.header("Force")
+        
+    with cols[7]:
         S = st.number_input("Squat (kg)", min_value=0.0, max_value=1000.0, value=0.0)
         B = st.number_input("Bench (kg)", min_value=0.0, max_value=1000.0, value=0.0)
         D = st.number_input("Deadlift (kg)", min_value=0.0, max_value=1000.0, value=0.0)
+        discipline_force = st.selectbox("Discipline", ["Total SBD"])
+
+    cols[4].markdown("")
+    cols[8].metric("", f"{0.00:.1f}%")
+    cols[8].metric("", f"{0.00:.1f}%")
+    cols[8].metric("", f"{0.00:.1f}%")
+
+    st.markdown("---")  # Creates a horizontal rule
 
     # Compute scores
     SBD = S + B + D
     temps = 60 * h + m + s / 60
-    temps_semi = temps if discipline == "Semi-Marathon" else None
-    temps_marathon = temps if discipline == "Marathon" else None
+    temps_semi = temps if discipline_endurance == "Semi-Marathon" else None
+    temps_marathon = temps if discipline_endurance == "Marathon" else None
     final_score, force_score, endu_score = atl.score_athlete(sexe, poids, age, SBD, temps_marathon, temps_semi)
 
+
     # Metrics row
-    metric_col1, metric_col2, metric_col3 = st.columns(3)
-    metric_col1.metric("Endurance Score (%)", f"{endu_score:.1f}%")
-    metric_col2.metric("Hybrid Score (%)", f"{final_score:.1f}%")
-    metric_col3.metric("Force Score (%)", f"{force_score:.1f}%")
+    metric_cols = st.columns(3)
+    metric_cols[0].metric("## Endurance Score (%)", f"{endu_score:.1f}%")
+    metric_cols[1].metric("## Hybrid Score (%)", f"{final_score:.1f}%")
+    metric_cols[2].metric("## Force Score (%)", f"{force_score:.1f}%")
 
 
     # Second row: three plots
     pcol1, pcol2, pcol3 = st.columns(3)
-    pcol1.pyplot(plot_endu(age, h, m, s, sexe, discipline), use_container_width=True)
+    pcol1.pyplot(plot_endu(age, h, m, s, sexe, discipline_endurance), use_container_width=True)
     pcol2.pyplot(plot_final(force_score, endu_score), use_container_width=True)
     pcol3.pyplot(plot_force(age, poids, S, B, D, sexe), use_container_width=True)
 
