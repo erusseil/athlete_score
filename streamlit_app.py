@@ -21,7 +21,7 @@ def plot_force(age, poids, S, B, D, sexe):
     ax.xaxis.grid(color=color_grid)
 
     SBD = S + B + D
-    model = atl.model_params_homme if sexe == "H" else atl.model_params_femme
+    model = atl.model_params_homme if sexe == "M" else atl.model_params_femme
 
     mini_poids = 40
     maxi_poids = 300
@@ -66,7 +66,7 @@ def plot_endu(age, h, m, s, sexe, discipline):
     axis_age = np.array([atl.facteur_age_marathon(k) for k in X_age])
     facteur_age = atl.facteur_age_marathon(age)
 
-    if sexe == "H":
+    if sexe == "M":
         wr_base = wr.marathon_age_homme
         wr_semi = wr.semi_age_homme
     else:
@@ -133,25 +133,25 @@ def main():
 
     title_cols = st.columns(3)
     title_cols[0].markdown("----------")
-    title_cols[1].markdown("<h2 style='text-align: center; font-size: 52px;'>Hybrid Score Calculator</h2>", unsafe_allow_html=True)
+    title_cols[1].markdown("<h2 style='text-align: center; font-size: 53px;'>Athlete Score Calculator</h2>", unsafe_allow_html=True)
     title_cols[2].markdown("----------")
 
-    title_cols[0].markdown("<h2 style='text-align: center;'>Endurance</h2>", unsafe_allow_html=True)
+    title_cols[0].markdown("<h2 style='text-align: center; font-size: 48px;'>Endurance</h2>", unsafe_allow_html=True)
     title_cols[1].markdown("<h2 style='text-align: center;'>User info</h2>", unsafe_allow_html=True)
-    title_cols[2].markdown("<h2 style='text-align: center;'>Force</h2>", unsafe_allow_html=True)
+    title_cols[2].markdown("<h2 style='text-align: center; font-size: 48px;'>Strength</h2>", unsafe_allow_html=True)
 
     # First row: three input blocks
     cols = st.columns(9)
     with cols[1]:
-        h = st.number_input("Heures", min_value=0, max_value=99, value=0)
+        h = st.number_input("Hours", min_value=0, max_value=99, value=0)
         m = st.number_input("Minutes", min_value=0, max_value=59, value=0)
-        s = st.number_input("Secondes", min_value=0, max_value=59, value=0)
-        discipline_endurance = st.selectbox("Discipline", ["Semi-Marathon", "Marathon"])
+        s = st.number_input("Seconds", min_value=0, max_value=59, value=0)
+        discipline_endurance = st.selectbox("Discipline", ["Half-Marathon", "Marathon"])
 
     with cols[4]:
         age = st.number_input("Age", min_value=15, max_value=100, value=25, step=1)
-        poids = st.number_input("Poids (kg)", min_value=0.0, max_value=300.0, value=80.0)
-        sexe = st.selectbox("Sexe", ["H", "F"])
+        poids = st.number_input("Weigt (kg)", min_value=0.0, max_value=300.0, value=80.0)
+        sexe = st.selectbox("Sex", ["M", "F"])
         
     with cols[7]:
         S = st.number_input("Squat (kg)", min_value=0.0, max_value=1000.0, value=0.0)
@@ -169,17 +169,74 @@ def main():
     # Compute scores
     SBD = S + B + D
     temps = 60 * h + m + s / 60
-    temps_semi = temps if discipline_endurance == "Semi-Marathon" else None
+    temps_semi = temps if discipline_endurance == "Half-Marathon" else None
     temps_marathon = temps if discipline_endurance == "Marathon" else None
     final_score, force_score, endu_score = atl.score_athlete(sexe, poids, age, SBD, temps_marathon, temps_semi)
 
 
     # Metrics row
     metric_cols = st.columns(3)
-    metric_cols[0].metric("## Endurance Score (%)", f"{endu_score:.1f}%")
-    metric_cols[1].metric("## Hybrid Score (%)", f"{final_score:.1f}%")
-    metric_cols[2].metric("## Force Score (%)", f"{force_score:.1f}%")
+    #metric_cols[0].metric("## Endurance Score (%)", f"{endu_score:.1f}%")
+    #metric_cols[1].metric("## Hybrid Score (%)", f"{final_score:.1f}%")
+    #metric_cols[2].metric("## Force Score (%)", f"{force_score:.1f}%")
 
+    metric_cols[0].markdown(f"<h2 style='text-align: center; color: {color_debutant}; font-size: 45px;'>Endurance Score</h2>", unsafe_allow_html=True)
+    metric_cols[1].markdown(f"<h2 style='text-align: center; color: {color_record}; font-size: 45px;'>Hybrid Score</h2>", unsafe_allow_html=True)
+    metric_cols[2].markdown(f"<h2 style='text-align: center; color: {color_debutant}; font-size: 45px;'>Strength Score</h2>", unsafe_allow_html=True)
+
+    metric_cols[0].markdown(
+        f"""
+        <div style="display: flex; justify-content: center; margin-bottom: 30px">
+            <div style="
+                background-color: {color_debutant};
+                color: white;
+                padding: 0px 15px;
+                border-radius: 8px;
+                display: inline-block;
+                text-align: center;
+            ">
+                <span style='font-size: 65px; font-weight: bold;'>{endu_score:.1f}%</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    
+    metric_cols[1].markdown(
+        f"""
+        <div style="display: flex; justify-content: center; margin-bottom: 30px">
+            <div style="
+                background-color: {color_record};
+                color: white;
+                padding: 0px 15px;
+                border-radius: 8px;
+                display: inline-block;
+                text-align: center;
+            ">
+                <span style='font-size: 65px; font-weight: bold;'>{final_score:.1f}%</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    metric_cols[2].markdown(
+        f"""
+        <div style="display: flex; justify-content: center; margin-bottom: 30px">
+            <div style="
+                background-color: {color_debutant};
+                color: white;
+                padding: 0px 15px;
+                border-radius: 8px;
+                display: inline-block;
+                text-align: center;
+            ">
+                <span style='font-size: 65px; font-weight: bold;'>{force_score:.1f}%</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     # Second row: three plots
     pcol1, pcol2, pcol3 = st.columns(3)
