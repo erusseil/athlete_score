@@ -132,13 +132,22 @@ def main():
     st.set_page_config(layout = "wide")
 
     title_cols = st.columns(3)
-    title_cols[0].markdown("----------")
-    title_cols[1].markdown("<h2 style='text-align: center; font-size: 53px;'>Athlete Score Calculator</h2>", unsafe_allow_html=True)
-    title_cols[2].markdown("----------")
+    title_cols[0].markdown("""<hr style="border: none; height: 1px; background-color: black;" />""",unsafe_allow_html=True)
+    title_cols[1].markdown("<h2 style='text-align: center; color: black; font-size: 53px;'>Athlete Score Calculator</h2>", unsafe_allow_html=True)
+    title_cols[2].markdown("""<hr style="border: none; height: 1px; background-color: black;" />""",unsafe_allow_html=True)
 
-    title_cols[0].markdown("<h2 style='text-align: center; font-size: 48px;'>Endurance</h2>", unsafe_allow_html=True)
-    title_cols[1].markdown("<h2 style='text-align: center;'>User info</h2>", unsafe_allow_html=True)
-    title_cols[2].markdown("<h2 style='text-align: center; font-size: 48px;'>Strength</h2>", unsafe_allow_html=True)
+    title_cols[0].markdown("<h2 style='text-align: center; color: black; font-size: 48px;'>Endurance</h2>", unsafe_allow_html=True)
+    title_cols[1].markdown("<h2 style='text-align: center; color: black;'>User info</h2>", unsafe_allow_html=True)
+    title_cols[2].markdown("<h2 style='text-align: center; color: black; font-size: 48px;'>Strength</h2>", unsafe_allow_html=True)
+
+    # Inject custom CSS to make number input labels black
+    st.markdown("""
+        <style>
+        label {
+            color: black !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
     # First row: three input blocks
     cols = st.columns(9)
@@ -160,11 +169,13 @@ def main():
         discipline_force = st.selectbox("Discipline", ["Total SBD"])
 
     cols[4].markdown("")
-    cols[8].metric("", f"{0.00:.1f}%")
-    cols[8].metric("", f"{0.00:.1f}%")
-    cols[8].metric("", f"{0.00:.1f}%")
+    cols[8].markdown(f"<h2 style='text-align: center; color: black; font-size: 28px;'>{0.00:.1f}%</h2>", unsafe_allow_html=True)
+    cols[8].markdown("")
+    cols[8].markdown(f"<h2 style='text-align: center; color: black; font-size: 28px;'>{0.00:.1f}%</h2>", unsafe_allow_html=True)
+    cols[8].markdown("")
+    cols[8].markdown(f"<h2 style='text-align: center; color: black; font-size: 28px;'>{0.00:.1f}%</h2>", unsafe_allow_html=True)
 
-    st.markdown("---")  # Creates a horizontal rule
+    st.markdown("""<hr style="border: none; height: 1px; background-color: black;" />""",unsafe_allow_html=True)
 
     # Compute scores
     SBD = S + B + D
