@@ -159,38 +159,37 @@ def main():
 
     with cols[4]:
         age = st.number_input("Age", min_value=15, max_value=100, value=25, step=1)
-        poids = st.number_input("Weigt (kg)", min_value=0.0, max_value=300.0, value=80.0)
+        poids = st.number_input("Weigt (kg)", min_value=0.0, max_value=300.0, value=80.0, step=1.0)
         sexe = st.selectbox("Sex", ["M", "F"])
-        
+    
+    
     with cols[7]:
-        S = st.number_input("Squat (kg)", min_value=0.0, max_value=1000.0, value=0.0)
-        B = st.number_input("Bench (kg)", min_value=0.0, max_value=1000.0, value=0.0)
-        D = st.number_input("Deadlift (kg)", min_value=0.0, max_value=1000.0, value=0.0)
+        S = st.number_input("Squat (kg)", min_value=0.0, max_value=1000.0, value=0.0, step=1.0)
+        B = st.number_input("Bench (kg)", min_value=0.0, max_value=1000.0, value=0.0, step=1.0)
+        D = st.number_input("Deadlift (kg)", min_value=0.0, max_value=1000.0, value=0.0, step=1.0)
         discipline_force = st.selectbox("Discipline", ["Total SBD"])
 
-    cols[4].markdown("")
-    cols[8].markdown(f"<h2 style='text-align: center; color: black; font-size: 28px;'>{0.00:.1f}%</h2>", unsafe_allow_html=True)
-    cols[8].markdown("")
-    cols[8].markdown(f"<h2 style='text-align: center; color: black; font-size: 28px;'>{0.00:.1f}%</h2>", unsafe_allow_html=True)
-    cols[8].markdown("")
-    cols[8].markdown(f"<h2 style='text-align: center; color: black; font-size: 28px;'>{0.00:.1f}%</h2>", unsafe_allow_html=True)
-
-    st.markdown("""<hr style="border: none; height: 1px; background-color: black;" />""",unsafe_allow_html=True)
-
     # Compute scores
-    SBD = S + B + D
     temps = 60 * h + m + s / 60
     temps_semi = temps if discipline_endurance == "Half-Marathon" else None
     temps_marathon = temps if discipline_endurance == "Marathon" else None
-    final_score, force_score, endu_score = atl.score_athlete(sexe, poids, age, SBD, temps_marathon, temps_semi)
+    final_score, force_scores, endu_score = atl.score_athlete(sexe, poids, age, S, B, D, temps_marathon, temps_semi)
+    force_score = np.mean(force_scores)
+    score_S, score_B, score_D = force_scores
+
+    
+    cols[4].markdown("")
+    cols[8].markdown(f"<h2 style='color: black; font-size: 26px;'>{score_S:.1f}%</h2>", unsafe_allow_html=True)
+    cols[8].markdown("")
+    cols[8].markdown(f"<h2 style='color: black; font-size: 26px;'>{score_B:.1f}%</h2>", unsafe_allow_html=True)
+    cols[8].markdown("")
+    cols[8].markdown(f"<h2 style='color: black; font-size: 26px;'>{score_D:.1f}%</h2>", unsafe_allow_html=True)
+
+    st.markdown("""<hr style="border: none; height: 1px; background-color: black;" />""",unsafe_allow_html=True)
 
 
     # Metrics row
     metric_cols = st.columns(3)
-    #metric_cols[0].metric("## Endurance Score (%)", f"{endu_score:.1f}%")
-    #metric_cols[1].metric("## Hybrid Score (%)", f"{final_score:.1f}%")
-    #metric_cols[2].metric("## Force Score (%)", f"{force_score:.1f}%")
-
     metric_cols[0].markdown(f"<h2 style='text-align: center; color: {color_debutant}; font-size: 45px;'>Endurance Score</h2>", unsafe_allow_html=True)
     metric_cols[1].markdown(f"<h2 style='text-align: center; color: {color_record}; font-size: 45px;'>Hybrid Score</h2>", unsafe_allow_html=True)
     metric_cols[2].markdown(f"<h2 style='text-align: center; color: {color_debutant}; font-size: 45px;'>Strength Score</h2>", unsafe_allow_html=True)
