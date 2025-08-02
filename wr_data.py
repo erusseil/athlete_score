@@ -89,3 +89,6 @@ sbd_age_femme57 = np.array([[18, 420.0],
                             [53, 388],
                             [63, 326],
                             [73, 261]])
+
+# Based on the absolute world record
+SBD_percentages = np.array([470, 272.5, 410])/1152.5
