@@ -11,42 +11,52 @@ def wr_model(poids, slope, offset_X, amplitude):
     X = poids - offset_X
     return amplitude/(1 + np.exp(-slope * X))
 
-def score_SBD(sexe, poids, age, SBD, do_plot=False):
+def score_SBD(sexe, poids, age, S, B, D):
     
-    facteur_age = facteur_age_sbd(age)
+    SBD = 0
+    if (type(S) is float) or (type(S) is int):
+        SBD += S
 
-    X_poids = np.linspace(50, 200, 100)
+    if (type(B) is float) or (type(B) is int):
+        SBD += B
+
+    if (type(D) is float) or (type(D) is int):
+        SBD += D
+
+    facteur_age = facteur_age_sbd(age)
     
     if (sexe == 'H') or (sexe == 'M'):
-        wr = facteur_age * wr_model(poids, *model_params_homme)
-        wr_plot = facteur_age * wr_model(X_poids, *model_params_homme)
+        wr_value = facteur_age * wr_model(poids, *model_params_homme)
 
     elif sexe == 'F':
-        wr = facteur_age * wr_model(poids, *model_params_femme)
-        wr_plot = facteur_age * wr_model(X_poids, *model_params_femme)
+        wr_value = facteur_age * wr_model(poids, *model_params_femme)
 
 
     else:
         raise Exception("ERREUR: Sex must be M or F")
 
-    baseline = baseline_sbd * wr
-    baseline_plot = baseline_sbd * wr_plot
-    final_score = max((SBD-baseline)/(wr-baseline), 0)
+    wr_percentages = wr.SBD_percentages * wr_value
+    baseline_percentages = baseline_sbd * wr_percentages
 
-    if do_plot:
-        plt.plot(X_poids, wr_plot, linewidth=4, color="#AABD8C", label="Record du monde")
-        plt.plot(X_poids, baseline_plot, color="#F39B6D", linewidth=4, label="Débutant")
-        plt.vlines(x=poids, ymin=baseline, ymax=SBD, linestyle='dashed', color="#F39B6D", alpha=0.8)
-        plt.vlines(x=poids, ymin=SBD, ymax=wr, linestyle='dashed', color="#AABD8C", alpha=0.8)
-        plt.scatter(poids, SBD, color="#381D2A", marker='x', s=50, label="Toi")
-        plt.xlabel("Poids (kg)", fontsize=15)
-        plt.ylabel("Total S+B+D (kg)", fontsize=15)
-        plt.title(f"Sexe : {sexe}, Age : {age}, Score force: {100*final_score:.1f} %", fontsize=16)
-        plt.gca().set_yscale("function", functions=lambda x: x * score_renorm(x))
-        plt.legend()
-        plt.show()
 
-    return min(1, max((SBD-baseline)/(wr-baseline), 0))
+    if (type(S) is float) or (type(S) is int):
+        final_s = min(1,max((S-baseline_percentages[0])/(wr_percentages[0]-baseline_percentages[0]), 0))
+    else: 
+        final_s = 0
+
+    if (type(B) is float) or (type(B) is int):
+        final_b = min(1,max((B-baseline_percentages[1])/(wr_percentages[1]-baseline_percentages[1]), 0))
+    else:
+        final_b = 0
+
+    if (type(D) is float) or (type(D) is int):
+        final_d = min(1,max((D-baseline_percentages[2])/(wr_percentages[2]-baseline_percentages[2]), 0))
+    else:
+        final_d = 0
+
+    final_scores = np.array([final_s, final_b, final_d])
+
+    return final_scores
 
 
 def facteur_age_marathon(age):
@@ -114,7 +124,7 @@ def score_endurance(sexe, age, temps_marathon=None, temps_semi=None):
         return min(1, max(0, (vitesse_semi - baseline_semi) / (wr_semi - baseline_semi)))
 
 
-def score_athlete(sexe, poids, age, SBD, temps_marathon=None, temps_semi=None):
+def score_athlete(sexe, poids, age, S, B, D, temps_marathon=None, temps_semi=None):
 
     if (temps_marathon==None) & (temps_semi==None):
         score_endurance_value = 0
@@ -122,7 +132,8 @@ def score_athlete(sexe, poids, age, SBD, temps_marathon=None, temps_semi=None):
     else: 
         score_endurance_value = score_endurance(sexe, age, temps_marathon=temps_marathon, temps_semi=temps_semi)
         
-    score_SBD_value = score_SBD(sexe, poids, age, SBD)
+    score_SBD_values = score_SBD(sexe, poids, age, S, B, D)
+    score_SBD_value = np.mean(score_SBD_values)
     renormed_force = score_renorm(score_SBD_value)
     renormed_endurance = score_renorm(score_endurance_value)
     
@@ -133,7 +144,7 @@ def score_athlete(sexe, poids, age, SBD, temps_marathon=None, temps_semi=None):
     bonus = 1.05
     final = np.where(bonus*final<1, bonus*final, 1)
     
-    return 100*final, 100*score_SBD_value, 100*score_endurance_value
+    return 100*final, 100*score_SBD_values, 100*score_endurance_value
 
 def score_renorm(x, n=1.5):
     
@@ -151,68 +162,6 @@ def score_renorm(x, n=1.5):
         score = ((x ** n) / ((x ** n) + ((1 - x) ** n)) -0.5) * 2
         return score
 
-    
-
-    
-
-
-
-def plot_force():
-
-    # Fetch input values
-    age = int(age_entry.get())
-    sexe = str(sex_entry.get().upper())
-    poids = float(weight_entry.get())
-
-    S = score_s_entry.get()
-    B = score_b_entry.get()
-    D = score_d_entry.get()
-
-    if (S!='') & (B!='') & (D!=''):
-        SBD = float(S) + float(B) + float(D)
-    else:
-        return None
-
-    score_SBD(sexe, poids, age, SBD, do_plot=True)
-
-    
-def compute_result():
-
-    # Fetch input values
-    age = int(age_entry.get())
-    sexe = str(sex_entry.get().upper())
-    poids = float(weight_entry.get())
-
-    S = score_s_entry.get()
-    B = score_b_entry.get()
-    D = score_d_entry.get()
-
-    if (S!='') & (B!='') & (D!=''):
-        SBD = float(S) + float(B) + float(D)
-    else:
-        SBD = 0
-    
-    temps_semi = score_semi_entry.get()
-    temps_marathon = score_marathon_entry.get()
-
-    if temps_semi=='':
-        temps_semi = None
-    else:
-        temps_semi = float(temps_semi)
-        
-    if temps_marathon=='':
-        temps_marathon = None
-    else:
-        temps_marathon = float(temps_marathon)
-
-    if (temps_marathon is None) and (temps_semi is None):
-        temps_marathon = 999
-        temps_semi = 999
-    
-
-    # A simple computation example
-    result, both = score_athlete(sexe, poids, age, SBD, temps_marathon, temps_semi)
-    score_force, score_endu = both
 
 model_params_homme, _ = curve_fit(wr_model, wr.sbd_poids_homme[:, 0],  wr.sbd_poids_homme[:, 1], p0=[0.05, 50, 800])
 model_params_femme, _ = curve_fit(wr_model,  wr.sbd_poids_femme[:, 0],  wr.sbd_poids_femme[:, 1], p0=[0.05, 50, 800])
