@@ -82,13 +82,13 @@ def plot_endu(age, h, m, s, sexe, discipline):
 
     baseline_vitesse = wr_vitesse / atl.baseline_endurance
 
-    ax.plot(X_age, axis_age * wr_vitesse, linewidth=3.5, color=color_debutant, label="Record du monde")
-    ax.plot(X_age, axis_age * baseline_vitesse, linewidth=3.5, color=color_record, label="Débutant")
+    ax.plot(X_age, axis_age * wr_vitesse, linewidth=3.5, color=color_debutant, label="World record")
+    ax.plot(X_age, axis_age * baseline_vitesse, linewidth=3.5, color=color_record, label="Beginner")
 
     if mini_age <= age <= maxi_age:
         ax.vlines(x=age, ymin=baseline_vitesse * facteur_age, ymax=perso_vitesse, linestyle="dashed", color=color_record, alpha=0.9, linewidth=1.5)
         ax.vlines(x=age, ymin=perso_vitesse, ymax=wr_vitesse * facteur_age, linestyle="dashed", color=color_debutant, alpha=0.9, linewidth=1.5)
-        ax.scatter(age, perso_vitesse, color=marker_color, marker="x", s=150, linewidths=2, label="Toi")
+        ax.scatter(age, perso_vitesse, color=marker_color, marker="x", s=150, linewidths=2, label="You")
 
     ax.set_xlabel("Age")
     ax.set_title(f"Average speed = {perso_vitesse:.1f} km/h")
