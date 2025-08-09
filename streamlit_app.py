@@ -34,13 +34,13 @@ def plot_force(age, poids, S, B, D, sexe):
     wr_force = fage * atl.wr_model(poids, *model)
     baseline = atl.baseline_sbd * wr_force
 
-    ax.plot(X_poids, record_age, linewidth=3.5, color=color_debutant, label="Record du monde")
-    ax.plot(X_poids, baseline_plot, linewidth=3.5, color=color_record, label="Débutant")
+    ax.plot(X_poids, record_age, linewidth=3.5, color=color_debutant, label="World record")
+    ax.plot(X_poids, baseline_plot, linewidth=3.5, color=color_record, label="Beginner")
 
     if mini_poids <= poids <= maxi_poids:
         ax.vlines(x=poids, ymin=baseline, ymax=SBD, linestyle="dashed", color=color_record, alpha=0.9, linewidth=2)
         ax.vlines(x=poids, ymin=SBD, ymax=wr_force, linestyle="dashed", color=color_debutant, alpha=0.9, linewidth=2)
-        ax.scatter(poids, SBD, color=marker_color, marker="x", s=150, linewidths=2, label="Toi")
+        ax.scatter(poids, SBD, color=marker_color, marker="x", s=150, linewidths=2, label="You")
 
     ax.set_xlabel("Weight (kg)")
     ax.set_title(f"Total S+B+D = {SBD:.0f} kg")
