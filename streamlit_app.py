@@ -9,7 +9,7 @@ import wr_data as wr
 color_record = "#FF8552"
 color_debutant = "#297373"
 color_entre = "white"
-color_inter2 = "#ffe8d3"
+color_inter2 = "#ffc48e"
 color_inter = "#FFC289"
 marker_color = "black"
 color_grid = "#E0E0E0"
@@ -101,7 +101,7 @@ def plot_endu(age, h, m, s, sexe, discipline):
 def plot_final(force_score, endu_score):
     fig, ax = plt.subplots()
     cvals = [0, 50, 75, 100]
-    colors = [color_debutant, color_entre, color_inter, color_record]
+    colors = [color_debutant, color_entre, color_inter2, color_inter, color_record]
     norm = matplotlib.colors.Normalize(min(cvals), max(cvals))
     tuples = list(zip(norm(cvals), colors))
     cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", tuples)
