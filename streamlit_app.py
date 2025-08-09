@@ -42,7 +42,7 @@ def plot_force(age, poids, S, B, D, sexe):
         ax.vlines(x=poids, ymin=SBD, ymax=wr_force, linestyle="dashed", color=color_debutant, alpha=0.9, linewidth=2)
         ax.scatter(poids, SBD, color=marker_color, marker="x", s=150, linewidths=2, label="Toi")
 
-    ax.set_xlabel("Poids (kg)")
+    ax.set_xlabel("Weight (kg)")
     ax.set_title(f"Total S+B+D = {SBD:.0f} kg")
     ax.legend()
     fig.tight_layout()
@@ -91,7 +91,7 @@ def plot_endu(age, h, m, s, sexe, discipline):
         ax.scatter(age, perso_vitesse, color=marker_color, marker="x", s=150, linewidths=2, label="Toi")
 
     ax.set_xlabel("Age")
-    ax.set_title(f"Vitesse moyenne = {perso_vitesse:.1f} km/h")
+    ax.set_title(f"Average speed = {perso_vitesse:.1f} km/h")
     ax.legend()
     fig.tight_layout()
     return fig
@@ -119,9 +119,9 @@ def plot_final(force_score, endu_score):
 
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 100)
-    ax.set_xlabel("Score force (%)")
-    ax.set_ylabel("Score endurance (%)")
-    ax.set_title("Combinaison des scores")
+    ax.set_xlabel("Force score (%)")
+    ax.set_ylabel("Endurance score (%)")
+    ax.set_title("Computing hybrid score")
     fig.tight_layout()
     return fig
 
