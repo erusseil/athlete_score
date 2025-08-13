@@ -35,11 +35,13 @@ def score_SBD(sexe, poids, age, S, B, D):
     else:
         raise Exception("ERREUR: Sex must be M or F")
 
+    baseline_value = baseline_sbd * wr_value
+    
+    # Attempt to separate S, B, D scores. Isn't good because it depends on morphology
+    '''    
     wr_percentages = wr.SBD_percentages * wr_value
     baseline_percentages = baseline_sbd * wr_percentages
-
-    # Attempt to separate S, B, D scores. Isn't good because it depends on morphology
-    '''
+    
     if (type(S) is float) or (type(S) is int):
         final_s = min(1,max((S-baseline_percentages[0])/(wr_percentages[0]-baseline_percentages[0]), 0))
     else: 
@@ -58,7 +60,7 @@ def score_SBD(sexe, poids, age, S, B, D):
     final_scores = np.array([final_s, final_b, final_d])
     '''
 
-    return min(1,max((SBD-baseline_sbd)/(wr_value-baseline_sbd), 0))
+    return min(1,max((SBD-baseline_value)/(wr_value-baseline_value), 0))
 
 
 def facteur_age_marathon(age):
