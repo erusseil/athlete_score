@@ -38,7 +38,8 @@ def score_SBD(sexe, poids, age, S, B, D):
     wr_percentages = wr.SBD_percentages * wr_value
     baseline_percentages = baseline_sbd * wr_percentages
 
-
+    # Attempt to separate S, B, D scores. Isn't good because it depends on morphology
+    '''
     if (type(S) is float) or (type(S) is int):
         final_s = min(1,max((S-baseline_percentages[0])/(wr_percentages[0]-baseline_percentages[0]), 0))
     else: 
@@ -55,8 +56,9 @@ def score_SBD(sexe, poids, age, S, B, D):
         final_d = 0
 
     final_scores = np.array([final_s, final_b, final_d])
+    '''
 
-    return final_scores
+    return min(1,max((SBD-baseline_sbd)/(wr_value-baseline_sbd), 0))
 
 
 def facteur_age_marathon(age):
@@ -131,9 +133,8 @@ def score_athlete(sexe, poids, age, S, B, D, temps_marathon=None, temps_semi=Non
 
     else: 
         score_endurance_value = score_endurance(sexe, age, temps_marathon=temps_marathon, temps_semi=temps_semi)
-        
-    score_SBD_values = score_SBD(sexe, poids, age, S, B, D)
-    score_SBD_value = np.mean(score_SBD_values)
+
+    score_SBD_value = score_SBD(sexe, poids, age, S, B, D)
     renormed_force = score_renorm(score_SBD_value)
     renormed_endurance = score_renorm(score_endurance_value)
     
@@ -144,7 +145,7 @@ def score_athlete(sexe, poids, age, S, B, D, temps_marathon=None, temps_semi=Non
     bonus = 1.05
     final = np.where(bonus*final<1, bonus*final, 1)
     
-    return 100*final, 100*score_SBD_values, 100*score_endurance_value
+    return 100*final, 100*score_SBD_value, 100*score_endurance_value
 
 def score_renorm(x, n=1.5):
     
