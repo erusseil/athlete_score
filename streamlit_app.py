@@ -174,7 +174,10 @@ def main():
     temps = 60 * h + m + s / 60
     temps_semi = temps if discipline_endurance == "Half-Marathon" else None
     temps_marathon = temps if discipline_endurance == "Marathon" else None
-    final_score, force_scores, endu_score = atl.score_athlete(sexe, poids, age, S, B, D, temps_marathon, temps_semi)
+    final_score, force_score, endu_score = atl.score_athlete(sexe, poids, age, S, B, D, temps_marathon, temps_semi)
+
+    #ATTEMPT TO SHOW SEPARATE S, B, D SCORES. DIDN'T WORK BECAUSE IT DEPENDS ON MORPHOLOGY
+    '''
     force_score = np.mean(force_scores)
     score_S, score_B, score_D = force_scores
 
@@ -185,7 +188,8 @@ def main():
     cols[8].markdown(f"<h2 style='color: black; font-size: 26px;'>{score_B:.1f}%</h2>", unsafe_allow_html=True)
     cols[8].markdown("")
     cols[8].markdown(f"<h2 style='color: black; font-size: 26px;'>{score_D:.1f}%</h2>", unsafe_allow_html=True)
-
+    '''
+    
     st.markdown("""<hr style="border: none; height: 1px; background-color: black;" />""",unsafe_allow_html=True)
 
 
